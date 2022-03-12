@@ -115,6 +115,7 @@ class drone:
             self.sock.emit("getdata", payload)
         except:
             print("error sending payload")
+            return 0
 
         return
     
