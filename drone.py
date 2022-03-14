@@ -8,7 +8,7 @@
 from random import random, seed, randint    # Used to generate random data values
 import socketio                             # Used to connect to the servers websocket
 import requests                             # Allows to send API requests to the server
-from fakeGPS import GPS
+from fakeGPS import GPS                     # Used to fake a GPS signal
 
 # Main Class
 #   Functions:
@@ -117,7 +117,7 @@ class drone:
             print("error sending payload")
             return 0
 
-        return
+        return 1
     
     # Generates a random temperature value
     def getTemp(self):
