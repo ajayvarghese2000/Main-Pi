@@ -16,3 +16,96 @@
 
 # Main-Pi
 
+This repo contains code that will be run on the Main Pi. The Main Pi is responsible for interfacing with each of the individual subsystems attached to it, getting the relevant data from them and sending that to the cloud server.
+
+------------
+
+## Table of Contents
+
+- [Subsystem Overview](#Subsystem-Overview)
+- [Code Overview](#Code-Overview)
+    - [Event Loop](#Event-Loop)
+- [Wiring Diagram](#Wiring-Diagram)
+- [Installation](#Installation)
+- [Deployment](#Deployment)
+
+------------
+
+## Subsystem Overview
+
+There are 5 major subsystems attached to the Main Pi as well as the Main Pi system itself.
+
+<p align="center">
+	<img src="https://i.imgur.com/8I0nU0g.jpg" alt="drawing"/>
+</p>
+
+The vase majority of these are connected via I2C however the AI-Cam is connected using TCP Socket due to the larger amount of data that it sends and the limitations of the speed of the I2C bus.
+
+*For a more detailed look at the other indavidual subsystems please visit its respective repository they can all be found within the [Drone Firmware](https://github.com/lboroWMEME-TeamProject/Drone-Firmware) repo.*
+
+------------
+
+## Code Overview
+
+The Code is split into 2 major components,
+
+`main.py` - The main program that is run, starts us the sockets server that allows for the camera to connect and send data. Also contains the drone object.
+
+`drone.py` - Contains the drone class that handles getting the data from the I2C connected subsystems, packing that data into the schema the server is expecting and sending that data to the server.
+
+There are also some minor components,
+
+`fakeGPS.py` - Contains a object definition for a fake GPS module that emulates a GPS signal starting in Loughborough and emulates movement. 
+
+### Event Loop
+The main-ip runs a sockets server and runs on a simple event loop.
+
+<p align="center">
+	<img src="https://i.imgur.com/7Zk6h83.jpg" alt="drawing"/>
+</p>
+
+The socket server will wait for the AI-Cam to send a frame to it, then if sending is enabled via the toggle switch, it will get the data from the I2C devices and send it to the remote server. 
+
+If sending is not enabled it will discard the frame. A new frame comes in about 7-10 times per second when using the Raspberry Pi 4 to run the neural detection.
+
+
+------------
+
+## Wiring Diagram
+
+*Will be added when wiring is finalised*
+
+------------
+
+## Installation
+
+**Step 0** : Setup a Raspberry Pi with linux.
+
+**Step 1** : Clone the repo to the target device, If you have git installed you can do so by running the following.
+
+```
+git clone https://github.com/lboroWMEME-TeamProject/Main-Pi.git
+```
+
+**Step 3** : Install the Python dependencies using pip.
+
+```
+pip install -r requirements.txt
+```
+
+**Step 4** : Edit the configuration variables in `main.py` to match your setup.
+
+`main.py` :
+```
+# Creating the Drone object that the sensors will attach to
+DNAME = <SET THIS To THE ID/SERIAL OF THE DRONE>
+URL = <URL TO THE REMOTE SERVER>
+```
+
+**Step 5** : Run `main.py` and you will see a sockets server spin up and wait for connections.
+
+------------
+
+## Deployment
+
+------------
