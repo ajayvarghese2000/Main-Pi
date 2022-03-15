@@ -58,7 +58,7 @@ There are also some minor components,
 `fakeGPS.py` - Contains a object definition for a fake GPS module that emulates a GPS signal starting in Loughborough and emulates movement. 
 
 ### Event Loop
-The main-ip runs a sockets server and runs on a simple event loop.
+The Main-Pi runs a sockets server and runs on a simple event loop.
 
 <p align="center">
 	<img src="https://i.imgur.com/7Zk6h83.jpg" alt="drawing"/>
@@ -107,5 +107,46 @@ URL = <URL TO THE REMOTE SERVER>
 ------------
 
 ## Deployment
+
+Once you have the code installed and setup, you can deploy the package as a systemd service that auto starts up at boot. An example `.service` file is included in the project repo, you can use that or tweak the values to match your specific setup.
+
+`mainpi.service` :
+
+```
+[Unit]
+Description=Auto Start Main Pi Server
+After=network.target
+
+[Service]
+User=<User To Run App>
+Group=<User Group>
+WorkingDirectory=<Path to Working Directory>
+ExecStart=python3 main.py
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Once you have setup your `.service` file you need to enable it on the system by first copying the file to the systemd service location.
+
+You can do so by executing the following command
+
+```
+sudo cp mainpi.service /etc/systemd/system
+```
+
+Then you need to activate the service,
+
+```
+sudo systemctl enable mainpi.service
+```
+
+Then you can start the service
+
+```
+sudo systemctl start mainpi.service
+```
+
+Now on boot after the device has an internet connection the detection will automatically start.
 
 ------------
