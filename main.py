@@ -59,7 +59,7 @@ async def getdata(sid, mes):
                 Drone.connect()
             except:
                 CONNECTED = False
-    # If we're not meant to send data, attemt to disconnect if connected
+    # If we're not meant to send data, attempt to disconnect if connected
     else:
         if(CONNECTED == True):
             Drone.disconnect()
