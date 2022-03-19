@@ -48,7 +48,7 @@ if (CONNECTION_SWITCH() == True):
 @sio.on("cam")
 async def getdata(sid, mes):
 
-    # Using the gloabl variables 
+    # Using the global variables 
     global CONNECTED
 
     # Checks if we're meant to send data

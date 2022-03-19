@@ -3,9 +3,9 @@ Description=Auto Start Main Pi Server
 After=network.target
 
 [Service]
-User=ubuntu
-Group=ubuntu
-WorkingDirectory=/home/ubuntu/Main-Pi/
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/github/Main-Pi/
 ExecStart=python3 main.py
 
 [Install]

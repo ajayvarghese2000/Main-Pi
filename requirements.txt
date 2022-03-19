@@ -1,3 +1,4 @@
 uvicorn[standard]
-socketio
+python-socketio
+python-socketio[client]
 smbus2
