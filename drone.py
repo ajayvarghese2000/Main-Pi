@@ -9,6 +9,7 @@ from random import random, seed, randint    # Used to generate random data value
 import socketio                             # Used to connect to the servers websocket
 import requests                             # Allows to send API requests to the server
 from fakeGPS import GPS                     # Used to fake a GPS signal
+from geiger import Geiger_Counter           # Used to interface with the Geiger Counter
 
 # Main Class
 #   Functions:
@@ -34,6 +35,9 @@ class drone:
 
         # Initiating the GPS sensor
         self.GPS = GPS()
+
+        # Initiating the Geiger sensor
+        self.geiger = Geiger_Counter(0x4d)
 
         return
     
@@ -161,7 +165,7 @@ class drone:
 
     # Generates a random radiation level
     def getGeiger(self):
-        return randint(0,2500)
+        return self.geiger.getData()
         
     # Generates random lat and log values
     def getGPS(self):

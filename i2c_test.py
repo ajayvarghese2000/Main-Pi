@@ -1,4 +1,5 @@
 ## [Imports]
+from time import sleep
 from smbus2 import SMBus    # Used to communicate with the i2c bus on pi
 
 # Initialising the I2C Bus
@@ -24,11 +25,16 @@ def read_test(registar_address):
         combine = dat[1] << 8 | dat[0]
 
         # Retrun the Hex
-        return hex(combine)
+        return combine
     # Returns 1 on failure
     except:
-        return 1
+        return "err"
 
 # Try reading from registar 1
-print(read_test(0))
+print(read_test(1))
+
+
+while True:
+    sleep(1)
+    print(read_test(1))
 
