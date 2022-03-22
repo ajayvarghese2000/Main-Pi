@@ -6,7 +6,7 @@ from smbus2 import SMBus    # Used to communicate with the i2c bus on pi
 BUS = SMBus(1)
 
 # Address of the i2c device
-ADDRESS = 0x4d
+ADDRESS = 0x2d ## 0x2d for the Pm and 0x4d for the geiger
 
 # The Number of Blocks of 8 bits to read from the device
 BLOCKSIZE = 2   # [WARNING] If set incorrectly the i2c bus will block out
@@ -31,10 +31,22 @@ def read_test(registar_address):
         return "err"
 
 # Try reading from registar 1
-print(read_test(1))
+#print(read_test(1))
 
 
 while True:
+    PM1= read_test(1)
+    sleep(0.1)
+    PM2_5 = read_test(2)
+    sleep(0.1)
+    PM10 = read_test(2)
+    sleep(0.1)
+    print("PM1 = ", PM1, " PM2.5 = ", PM2_5 , " PM10 = ", PM10)
     sleep(1)
-    print(read_test(1))
+
+
+## for the geiger
+# while True:
+#     print(read_test(1))
+#     sleep(1)
 
