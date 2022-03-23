@@ -1,5 +1,4 @@
-# A class to interface with the i2C Geiger Counter
-#
+# A class to interface with the i2C PMS5003 Sensor
 #   Written by Team CCC
 #
 
@@ -8,12 +7,12 @@ from smbus2 import SMBus    # Used to communicate with the i2c bus on pi
 
 # Main Class
 #   Functions:
-#     Constructor   - Sets up up the Geiger Counter
+#     Constructor   - Sets up up the PMS5003 Sensor
 #     getData       - Returns the CPM
-class Geiger_Counter:
-    
+class PMS5003_Sensor:
+
     # Constructor class, sets drone up
-    #   Takes in, the Address the geiger counter is at
+    #   Takes in, the Address the PMS5003 Sensor is at
     def __init__(self, ADDRESS):
 
         ## [Default Values] (centred around Loughborough)
@@ -27,16 +26,19 @@ class Geiger_Counter:
         # The Number of Blocks of 8 bits to read from the device
         self.BLOCKSIZE = 2   # [WARNING] If set incorrectly the i2c bus will block out
 
-        # Default value of the geiger counter
+        # Default value of the PMS5003 Sensor
         self.combine = 0
 
         return
 
-    def getData(self):
+    # Function to get data from the I2C device
+    #   Takes in a registar value that you want to retrive data from.
+    #       REGISTAR -> 1 = PM1, 2 = PM2.5, 3 = PM10
+    def getData(self, REGISTAR:int):
         # Attempt read from bus
         try:
             # Attempt read from device
-            dat = self.BUS.read_i2c_block_data(self.ADDRESS, 1, self.BLOCKSIZE)
+            dat = self.BUS.read_i2c_block_data(self.ADDRESS, REGISTAR, self.BLOCKSIZE)
 
             # Combine the Values
             self.combine = dat[1] << 8 | dat[0]
@@ -49,7 +51,7 @@ class Geiger_Counter:
 
 '''
 # Testing
-geiger = Geiger_Counter(0x4d)
+PMS5003 = PMS5003_Sensor(0x2d)
 
-print(geiger.getData())
+print(PMS5003.getData(1))
 '''

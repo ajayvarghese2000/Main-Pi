@@ -4,12 +4,18 @@
 #   Written by Team CCC
 #
 
+
+
 ## [imports]
 from random import random, seed, randint    # Used to generate random data values
 import socketio                             # Used to connect to the servers websocket
 import requests                             # Allows to send API requests to the server
 from fakeGPS import GPS                     # Used to fake a GPS signal
 from geiger import Geiger_Counter           # Used to interface with the Geiger Counter
+from PMS5003 import PMS5003_Sensor          # Used to interface with the PMS5003 Sensor
+from time import sleep                      # Used to add delays so the comm bus' are not overloaded
+
+
 
 # Main Class
 #   Functions:
@@ -38,6 +44,9 @@ class drone:
 
         # Initiating the Geiger sensor
         self.geiger = Geiger_Counter(0x4d)
+
+        # Initiating the PMS5003 Sensor
+        self.PMS5003 = PMS5003_Sensor(0x4d)
 
         return
     
@@ -101,7 +110,10 @@ class drone:
         payload["pressure"] = self.getPressure()
         payload["humidity"] = self.getHumidity()
         payload["lux"] = self.getLux()
-        payload["geiger"] = self.getGeiger()
+
+        # Getting data from the Geiger Counter
+        payload["geiger"]= self.getGeiger()
+
         payload["gas"] = self.getGas()
         payload["air"] = self.getAir()
         payload["gps"] = self.getGPS()
@@ -157,15 +169,39 @@ class drone:
         # Creating the Air data structure to be inside the payload
         air = {}
         
-        air["pm1"] = round(random(),2)
-        air["pm2_5"] = round(random(),2)
-        air["pm10"] = round(random(),2)
+        air["pm1"], check = self.PMS5003.getData(1)
+        sleep(0.05)
+
+        # Checking if the I2C failed or not
+        if(check == 1):
+            print("PMS5003 PM1 I2C Error")
+
+        air["pm2_5"], check = self.PMS5003.getData(2)
+        sleep(0.05)
+
+        # Checking if the I2C failed or not
+        if(check == 1):
+            print("PMS5003 PM2.5 I2C Error")
+
+        air["pm10"], check = self.PMS5003.getData(3)
+        sleep(0.05)
+
+        # Checking if the I2C failed or not
+        if(check == 1):
+            print("PMS5003 PM10 I2C Error")
 
         return air
 
     # Generates a random radiation level
     def getGeiger(self):
-        return self.geiger.getData()
+        data, check = self.geiger.getData()
+        sleep(0.05)
+        
+        # Checking if the I2C failed or not
+        if(check == 1):
+            print("Geiger Counter I2C Error")
+        
+        return data
         
     # Generates random lat and log values
     def getGPS(self):

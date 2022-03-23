@@ -39,7 +39,7 @@ while True:
     sleep(0.1)
     PM2_5 = read_test(2)
     sleep(0.1)
-    PM10 = read_test(2)
+    PM10 = read_test(3)
     sleep(0.1)
     print("PM1 = ", PM1, " PM2.5 = ", PM2_5 , " PM10 = ", PM10)
     sleep(1)
