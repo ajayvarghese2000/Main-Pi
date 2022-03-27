@@ -1,7 +1,7 @@
 ## [imports]
 import socketio             # The socketIO server that will wait for images from camera
 import uvicorn              # The ASGI that will run the service
-from drone_sim import drone     # The drone module
+from drone_sim import drone # The drone module
 from time import sleep      # Used for Simple delays
 import RPi.GPIO as GPIO     # Used to Access RPi GPIO Pins
 
@@ -18,10 +18,10 @@ URL = "https://ajayvarghese.me"
 Drone = drone(DNAME, URL)
 
 # Pin the Connection Toggle is connected to
-CONNECTION_TOGGLE_PIN = 23
+CONNECTION_TOGGLE_PIN = 24
 
 # Mapping up the connection toggle to the pin its connected to
-GPIO.setup(CONNECTION_TOGGLE_PIN, GPIO.IN)
+GPIO.setup(CONNECTION_TOGGLE_PIN, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 
 # Function to check if the drone should be sending data or not
 # Returns True or False
