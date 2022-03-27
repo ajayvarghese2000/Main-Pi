@@ -15,7 +15,8 @@ from geiger import Geiger_Counter           # Used to interface with the Geiger 
 from PMS5003 import PMS5003_Sensor          # Used to interface with the PMS5003 Sensor
 from time import sleep                      # Used to add delays so the comm bus' are not overloaded
 from I2C_Reset import I2C_Watchdog          # Used to reset I2C devices in case of errors
-from smbus2 import SMBus
+from smbus2 import SMBus                    # Used to access the I2C bus
+from thermal_cam import thermal_camera      # Used to get image from teh thermal camera
 
 
 
@@ -52,6 +53,9 @@ class drone:
 
         # Initiating the PMS5003 Sensor
         self.PMS5003 = PMS5003_Sensor(0x2d)
+
+        # Initiating the Thermal Camera Sensor
+        self.tcam = thermal_camera()
 
         # I2C Error Counter
         self.ERROR_COUNTER = 0
@@ -133,7 +137,7 @@ class drone:
         payload["cam"] = frame
 
         # As there is no thermal camera, for testing the thermal camera shows the same frame
-        payload["tcam"] = frame
+        payload["tcam"] = self.tcam.get_image()
 
         payload["person"] = person
 
