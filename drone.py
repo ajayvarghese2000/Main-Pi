@@ -212,7 +212,7 @@ class drone:
         if(self.ERROR_COUNTER > 3):
             
             # Reset the I2C bus
-            #self.I2C_WATCHDOG.reset()
+            self.I2C_WATCHDOG.reset()
 
             # Reset the error counter
             self.ERROR_COUNTER = 0
