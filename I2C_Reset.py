@@ -30,6 +30,10 @@ class I2C_Watchdog:
         # Enabling the I2C devices
         GPIO.output(self.PIN, GPIO.LOW)
 
+
+# Testing
+'''
 I2C = I2C_Watchdog(23)
 
 I2C.reset()
+'''

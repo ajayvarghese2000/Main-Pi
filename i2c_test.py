@@ -36,16 +36,16 @@ def read_test(registar_address):
 
 while True:
     PM1= read_test(1)
-    sleep(0.1)
+    sleep(0.0025)
     PM2_5 = read_test(2)
-    sleep(0.1)
+    sleep(0.0025)
     PM10 = read_test(3)
-    sleep(0.1)
+    sleep(0.0025)
     print("PM1 = ", PM1, " PM2.5 = ", PM2_5 , " PM10 = ", PM10)
-    sleep(1)
+    sleep(0.0025)
 
 
 ## for the geiger
 # while True:
 #     print(read_test(1))
-#     sleep(1)
+#     sleep(0.0025)

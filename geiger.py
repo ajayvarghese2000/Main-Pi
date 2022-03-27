@@ -16,11 +16,6 @@ class Geiger_Counter:
     #   Takes in, the Address the geiger counter is at
     def __init__(self, ADDRESS):
 
-        ## [Default Values] (centred around Loughborough)
-        
-        # Initialising the I2C Bus
-        self.BUS = SMBus(1)
-
         # Address of the i2c device
         self.ADDRESS = ADDRESS
 
@@ -32,11 +27,11 @@ class Geiger_Counter:
 
         return
 
-    def getData(self):
+    def getData(self, BUS):
         # Attempt read from bus
         try:
             # Attempt read from device
-            dat = self.BUS.read_i2c_block_data(self.ADDRESS, 1, self.BLOCKSIZE)
+            dat = BUS.read_i2c_block_data(self.ADDRESS, 1, self.BLOCKSIZE)
 
             # Combine the Values
             self.combine = dat[1] << 8 | dat[0]

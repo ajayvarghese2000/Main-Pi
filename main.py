@@ -1,7 +1,7 @@
 ## [imports]
 import socketio             # The socketIO server that will wait for images from camera
 import uvicorn              # The ASGI that will run the service
-from drone_sim import drone # The drone module
+from drone import drone # The drone module
 from time import sleep      # Used for Simple delays
 import RPi.GPIO as GPIO     # Used to Access RPi GPIO Pins
 

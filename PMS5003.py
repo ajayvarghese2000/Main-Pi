@@ -15,11 +15,6 @@ class PMS5003_Sensor:
     #   Takes in, the Address the PMS5003 Sensor is at
     def __init__(self, ADDRESS):
 
-        ## [Default Values] (centred around Loughborough)
-        
-        # Initialising the I2C Bus
-        self.BUS = SMBus(1)
-
         # Address of the i2c device
         self.ADDRESS = ADDRESS
 
@@ -34,11 +29,11 @@ class PMS5003_Sensor:
     # Function to get data from the I2C device
     #   Takes in a registar value that you want to retrive data from.
     #       REGISTAR -> 1 = PM1, 2 = PM2.5, 3 = PM10
-    def getData(self, REGISTAR:int):
+    def getData(self, REGISTAR:int, BUS):
         # Attempt read from bus
         try:
             # Attempt read from device
-            dat = self.BUS.read_i2c_block_data(self.ADDRESS, REGISTAR, self.BLOCKSIZE)
+            dat = BUS.read_i2c_block_data(self.ADDRESS, REGISTAR, self.BLOCKSIZE)
 
             # Combine the Values
             self.combine = dat[1] << 8 | dat[0]

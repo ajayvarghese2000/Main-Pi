@@ -15,6 +15,7 @@ from geiger import Geiger_Counter           # Used to interface with the Geiger 
 from PMS5003 import PMS5003_Sensor          # Used to interface with the PMS5003 Sensor
 from time import sleep                      # Used to add delays so the comm bus' are not overloaded
 from I2C_Reset import I2C_Watchdog          # Used to reset I2C devices in case of errors
+from smbus2 import SMBus
 
 
 
@@ -40,6 +41,9 @@ class drone:
         # Sets the seed to generate data with
         seed(1)
 
+        # Initialising the I2C Bus
+        self.BUS = SMBus(1)
+
         # Initiating the GPS sensor
         self.GPS = GPS()
 
@@ -47,7 +51,7 @@ class drone:
         self.geiger = Geiger_Counter(0x4d)
 
         # Initiating the PMS5003 Sensor
-        self.PMS5003 = PMS5003_Sensor(0x4d)
+        self.PMS5003 = PMS5003_Sensor(0x2d)
 
         # I2C Error Counter
         self.ERROR_COUNTER = 0
@@ -176,24 +180,27 @@ class drone:
         # Creating the Air data structure to be inside the payload
         air = {}
         
-        air["pm1"], check = self.PMS5003.getData(1)
-        sleep(0.0025)
+        air["pm1"], check = self.PMS5003.getData(1, self.BUS)
+        #print("PM1 ", air["pm1"], " Check ", check)
+        sleep(0.01)
 
         # Checking if the I2C failed or not
         if(check == 1):
             self.ERROR_COUNTER = self.ERROR_COUNTER + 1
             print("PMS5003 PM1 I2C Error")
 
-        air["pm2_5"], check = self.PMS5003.getData(2)
-        sleep(0.0025)
+        air["pm2_5"], check = self.PMS5003.getData(2, self.BUS)
+        #print("PM2.5 ", air["pm2_5"], " Check ", check)
+        sleep(0.01)
 
         # Checking if the I2C failed or not
         if(check == 1):
             self.ERROR_COUNTER = self.ERROR_COUNTER + 1
             print("PMS5003 PM2.5 I2C Error")
 
-        air["pm10"], check = self.PMS5003.getData(3)
-        sleep(0.0025)
+        air["pm10"], check = self.PMS5003.getData(3, self.BUS)
+        #print("PM10 ", air["pm10"], " Check ", check)
+        sleep(0.01)
 
         # Checking if the I2C failed or not
         if(check == 1):
@@ -205,7 +212,7 @@ class drone:
         if(self.ERROR_COUNTER > 3):
             
             # Reset the I2C bus
-            self.I2C_WATCHDOG.reset()
+            #self.I2C_WATCHDOG.reset()
 
             # Reset the error counter
             self.ERROR_COUNTER = 0
@@ -214,8 +221,9 @@ class drone:
 
     # Generates a random radiation level
     def getGeiger(self):
-        data, check = self.geiger.getData()
-        sleep(0.0025)
+        data, check = self.geiger.getData(self.BUS)
+        #print("CPM ", data, " Check ", check)
+        sleep(0.01)
         
         # Checking if the I2C failed or not
         if(check == 1):
