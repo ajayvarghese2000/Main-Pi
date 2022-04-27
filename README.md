@@ -87,7 +87,17 @@ If sending is not enabled it will discard the frame. A new frame comes in about 
 
 ## Wiring Diagram
 
-*Will be added when wiring is finalised*
+Most of the components will need to be connect to the PCB headers using header wires like in the following:
+
+<p align="center">
+	<img src="https://i.imgur.com/F7RUM0e.png" alt="drawing"/>
+</p>
+
+Once that is connected then Enviro+ can be plugged into the 40 pin male header. Then the whole PCB can be plugged into the Main Pi's headers.
+
+<p align="center">
+	<img src="https://i.imgur.com/xpgFEpD.png" alt="drawing"/>
+</p>
 
 ------------
 
