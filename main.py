@@ -18,7 +18,7 @@ URL = "https://ajayvarghese.me"
 Drone = drone(DNAME, URL)
 
 # Pin the Connection Toggle is connected to
-CONNECTION_TOGGLE_PIN = 24
+CONNECTION_TOGGLE_PIN = 26
 
 # Mapping up the connection toggle to the pin its connected to
 GPIO.setup(CONNECTION_TOGGLE_PIN, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)

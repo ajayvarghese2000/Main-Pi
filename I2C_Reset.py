@@ -32,8 +32,7 @@ class I2C_Watchdog:
 
 
 # Testing
-'''
-I2C = I2C_Watchdog(23)
+
+I2C = I2C_Watchdog(16)
 
 I2C.reset()
-'''

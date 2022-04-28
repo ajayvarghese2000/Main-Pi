@@ -61,7 +61,7 @@ class drone:
         self.ERROR_COUNTER = 0
 
         # Creating the I2C Watchdog connected on pin 23
-        self.I2C_WATCHDOG = I2C_Watchdog(23)
+        self.I2C_WATCHDOG = I2C_Watchdog(16)
 
         return
     

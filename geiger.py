@@ -5,6 +5,7 @@
 
 ## [imports]
 from smbus2 import SMBus    # Used to communicate with the i2c bus on pi
+from time import sleep
 
 # Main Class
 #   Functions:
@@ -42,9 +43,16 @@ class Geiger_Counter:
         except:
             return self.combine, 1
 
+
 '''
 # Testing
+
+BUS = SMBus(1)
+
 geiger = Geiger_Counter(0x4d)
 
-print(geiger.getData())
+while True:
+    data, check = geiger.getData(BUS)
+    print(data)
+    sleep(0.1)
 '''
