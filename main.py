@@ -58,7 +58,7 @@ async def getdata(sid, mes):
         if(CONNECTED == True):
 
             # Sends the data to the server checks if it fails
-            if(Drone.senddata(mes["frame"], mes["person"]) == 0):
+            if(await Drone.senddata(mes["frame"], mes["person"]) == 0):
 
                 # If it does fail disconnect
                 await sio.disconnect(sid)
@@ -67,7 +67,7 @@ async def getdata(sid, mes):
         # If not already connected attempt a connection
         else:
 
-            # tries to connect and set the appropriate falgs
+            # tries to connect and set the appropriate flags
             CONNECTED = True
             try:
                 Drone.connect()

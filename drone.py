@@ -7,16 +7,14 @@
 
 
 ## [imports]
-from random import random, seed, randint    # Used to generate random data values
 import socketio                             # Used to connect to the servers websocket
 import requests                             # Allows to send API requests to the server
 from fakeGPS import GPS                     # Used to fake a GPS signal
 from geiger import Geiger_Counter           # Used to interface with the Geiger Counter
-from PMS5003 import PMS5003_Sensor          # Used to interface with the PMS5003 Sensor
 from time import sleep                      # Used to add delays so the comm bus' are not overloaded
-from I2C_Reset import I2C_Watchdog          # Used to reset I2C devices in case of errors
 from smbus2 import SMBus                    # Used to access the I2C bus
-from thermal_cam import thermal_camera      # Used to get image from teh thermal camera
+from thermal_cam import thermal_camera      # Used to get image from the thermal camera
+from Enviro import Enviro                   # Used to get data of the Enviro Sensor
 
 
 
@@ -39,9 +37,6 @@ class drone:
         # Assigns the URL of the server to a internal variable
         self.url = URL
 
-        # Sets the seed to generate data with
-        seed(1)
-
         # Initialising the I2C Bus
         self.BUS = SMBus(1)
 
@@ -51,17 +46,11 @@ class drone:
         # Initiating the Geiger sensor
         self.geiger = Geiger_Counter(0x4d)
 
-        # Initiating the PMS5003 Sensor
-        self.PMS5003 = PMS5003_Sensor(0x2d)
+        # Initiating the Enviro
+        self.enviro = Enviro()
 
         # Initiating the Thermal Camera Sensor
-        self.tcam = thermal_camera()
-
-        # I2C Error Counter
-        self.ERROR_COUNTER = 0
-
-        # Creating the I2C Watchdog connected on pin 23
-        self.I2C_WATCHDOG = I2C_Watchdog(16)
+        ##self.tcam = thermal_camera()
 
         return
     
@@ -109,10 +98,7 @@ class drone:
 
     # Allows to build the payload of data to be sent to the server via the websocket
     #   Takes in the frame from the webcam in Base64 format
-    def senddata(self, frame, person):
-
-        # Changing the seed to get random values
-        seed(randint(0,1000000))
+    async def senddata(self, frame, person):
 
         # Creating a new payload to send and setting the droneID
         payload = {}
@@ -137,7 +123,7 @@ class drone:
         payload["cam"] = frame
 
         # As there is no thermal camera, for testing the thermal camera shows the same frame
-        payload["tcam"] = self.tcam.get_image()
+        payload["tcam"] = frame #self.tcam.get_image()
 
         payload["person"] = person
 
@@ -152,97 +138,38 @@ class drone:
     
     # Generates a random temperature value
     def getTemp(self):
-        return round(randint(-10,100) + random(), 2)
+        return self.enviro.get_temperature()
         
     # Generates a random pressure value
     def getPressure(self):
-        return round(randint(900,1500) + random(), 2)
+        return self.enviro.get_pressure()
 
     # Generates a random humidity value
     def getHumidity(self):
-        return round(randint(0,100) + random(), 2)
+        return self.enviro.get_humidity()
         
     # Generates a random lux value
     def getLux(self):
-        return round(randint(0,100) + random(), 2)
+        return self.enviro.get_light()
         
     # Generates random gas sensor values
     def getGas(self):
-
-        # Creating the gas data structure to be inside the payload
-        gas = {}
-
-        gas["co"] = round(random(),2)
-        gas["no2"] = round(random(),2)
-        gas["nh3"] = round(random(),2)
-        
-        return gas
+        return self.enviro.get_gas()
     
     # Generates random air particle values
     def getAir(self):
-        
-        # Creating the Air data structure to be inside the payload
-        air = {}
-        
-        air["pm1"], check = self.PMS5003.getData(1, self.BUS)
-        #print("PM1 ", air["pm1"], " Check ", check)
-        sleep(0.01)
-
-        # Checking if the I2C failed or not
-        if(check == 1):
-            self.ERROR_COUNTER = self.ERROR_COUNTER + 1
-            print("PMS5003 PM1 I2C Error")
-
-        air["pm2_5"], check = self.PMS5003.getData(2, self.BUS)
-        #print("PM2.5 ", air["pm2_5"], " Check ", check)
-        sleep(0.01)
-
-        # Checking if the I2C failed or not
-        if(check == 1):
-            self.ERROR_COUNTER = self.ERROR_COUNTER + 1
-            print("PMS5003 PM2.5 I2C Error")
-
-        air["pm10"], check = self.PMS5003.getData(3, self.BUS)
-        #print("PM10 ", air["pm10"], " Check ", check)
-        sleep(0.01)
-
-        # Checking if the I2C failed or not
-        if(check == 1):
-            self.ERROR_COUNTER = self.ERROR_COUNTER + 1
-            print("PMS5003 PM10 I2C Error")
-
-        
-        # Checking if the I2C bus has errored multiple times
-        if(self.ERROR_COUNTER > 3):
-            
-            # Reset the I2C bus
-            self.I2C_WATCHDOG.reset()
-
-            # Reset the error counter
-            self.ERROR_COUNTER = 0
-
-        return air
+        # Getting the Air data
+        return self.enviro.get_air()
 
     # Generates a random radiation level
     def getGeiger(self):
         data, check = self.geiger.getData(self.BUS)
-        #print("CPM ", data, " Check ", check)
         sleep(0.01)
         
         # Checking if the I2C failed or not
         if(check == 1):
-            self.ERROR_COUNTER = self.ERROR_COUNTER + 1
             print("Geiger Counter I2C Error")
         
-        # Checking if the I2C bus has errored multiple times
-        if(self.ERROR_COUNTER > 3):
-            
-            # Reset the I2C bus
-            self.I2C_WATCHDOG.reset()
-
-            # Reset the error counter
-            self.ERROR_COUNTER = 0
-
         return data
         
     # Generates random lat and log values
@@ -251,6 +178,7 @@ class drone:
         # Creating the gps data structure to be inside the payload
         gps = {}
 
+        # Getting the GPS Values
         gps["lat"], gps["long"] = self.GPS.getPos()
         
         return gps
