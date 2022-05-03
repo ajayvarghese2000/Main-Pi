@@ -103,9 +103,9 @@ Once that is connected then Enviro+ can be plugged into the 40 pin male header. 
 
 ## Installation
 
-**Step 0** : Setup a Raspberry Pi with linux.
+**Step 1** : Setup a Raspberry Pi with linux.
 
-**Step 1** : Clone the repo to the target device, If you have git installed you can do so by running the following.
+**Step 2** : Clone the repo to the target device, If you have git installed you can do so by running the following.
 
 ```
 git clone https://github.com/lboroWMEME-TeamProject/Main-Pi.git
